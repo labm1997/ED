@@ -9,6 +9,10 @@ void limpador_intptr(int *dado){
   free(dado);
 }
 
+bool ordem(int a, int b){
+  return a > b;
+}
+
 /* Inicia e destroi lista */
 START_TEST(inicialiacao){
   Lista(int) *a = lista_criar(int);
@@ -26,7 +30,7 @@ START_TEST(inserir){
   Lista(int) *a = lista_criar(int);
   int i=0;
   for(;i<1000;i++) lista_adicionar(int,a,i);
-  for(i=0;i<1000;i++) ck_assert_int_eq(*lista_dado(int,a,i), i);
+  for(i=0;i<1000;i++) ck_assert_int_eq(*a->_(a,i), i);
   lista_apagar(int,&a);
   ck_assert(a == NULL);
 }
@@ -43,20 +47,61 @@ START_TEST(inserirComLimpador){
 }
 END_TEST
 
+/* Testes com inserção em posição definida */
+START_TEST(inserirRemoverPos){
+  Lista(int) *a = lista_criar(int);
+  lista_adicionar(int,a,10); /* a[0] */
+  lista_adicionar(int,a,45); /* a[1] */
+  lista_adicionar(int,a,8); /* a[2] */
+  lista_adicionar(int,a,150); /* a[3] */
+  ck_assert_int_eq(*a->_(a,2),8);
+  lista_remover(int,a,2);
+  ck_assert_int_eq(*a->_(a,2),150);
+  lista_remover(int,a,2);
+  ck_assert(a->_(a,2) == NULL);
+  lista_adicionar(int,a,150); /* a[2] */
+  ck_assert_int_eq(*a->_(a,2),150);
+  lista_apagar(int,&a);
+  ck_assert(a == NULL);
+}
+END_TEST
+
+/* Testes com inserção ordenada */
+START_TEST(inserirOrdem){
+  Lista(int) *a = lista_criar(int);
+  lista_definirOrdem(int,a,ordem);
+  lista_adicionar_ordem(int,a,10);
+  lista_adicionar_ordem(int,a,150);
+  lista_adicionar_ordem(int,a,8);
+  lista_adicionar_ordem(int,a,45);
+  ck_assert_int_eq(*a->_(a,0),8);
+  ck_assert_int_eq(*a->_(a,1),10);
+  ck_assert_int_eq(*a->_(a,2),45);
+  ck_assert_int_eq(*a->_(a,3),150);
+  lista_apagar(int,&a);
+  ck_assert(a == NULL);
+}
+END_TEST
+
 Suite *testeSuite(void){
   int i=0;
+  #define n 5
   Suite *s = suite_create("testeLista");
-  TCase *tc_core[3] = {
+  TCase *tc_core[n] = {
           tcase_create("Teste de inicialização/destruição de uma Lista"),
           tcase_create("Teste de inserção de elementos na lista"),
-          tcase_create("Teste de inserção de elementos com função de limpeza na lista")
+          tcase_create("Teste de inserção de elementos com função de limpeza na lista"),
+          tcase_create("Inserção de elementos em posições definidas e remoção deles"),
+          tcase_create("Inserção de elementos em ordem e remoção deles")
   };
-  static void (*testes[3])() = {
+  static void (*testes[n])() = {
     inicialiacao,
     inserir,
-    inserirComLimpador
+    inserirComLimpador,
+    inserirRemoverPos,
+    inserirOrdem
   };
-  for(;i<3;i++) {
+  for(;i<n;i++) {
     tcase_add_test(tc_core[i], testes[i]);
     suite_add_tcase(s,tc_core[i]);
   }

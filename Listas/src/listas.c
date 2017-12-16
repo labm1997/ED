@@ -1,13 +1,17 @@
 #ifndef IMPLEMENTACAO_LISTAS
 #define IMPLEMENTACAO_LISTAS
 
+
 #define lista_definir_I(tipo) \
+\
 Lista_##tipo *lista_criar_##tipo(){ \
   Lista_##tipo *novo = (Lista_##tipo *)malloc(sizeof(Lista_##tipo)); \
   novo->primeiro = NULL; \
   novo->ultimo = NULL; \
   novo->tamanho = 0; \
   novo->limparElemento = NULL; \
+  novo->ordem = NULL; \
+  novo->_ = lista_dado_##tipo; \
   return novo; \
 } \
 \
@@ -27,6 +31,20 @@ void lista_adicionar_##tipo(Lista_##tipo *lista, tipo dado){ \
   \
   if(tmp == NULL) lista->primeiro = lista->ultimo; \
   else tmp->proximo = lista->ultimo; \
+  \
+}\
+\
+void lista_definirOrdem_##tipo(Lista_##tipo *lista, bool (*comparador)(tipo,tipo)){ \
+  lista->ordem = comparador;\
+}\
+\
+void lista_adicionar_ordem_##tipo(Lista_##tipo *lista, tipo dado){\
+  LISTAS_INTEIRO_TAMANHO i=0; \
+  Lista_elemento_##tipo *tmp = lista->primeiro; \
+  if(lista->ordem != NULL){ \
+    for(;tmp!=NULL && lista->ordem(dado,tmp->dado);tmp=tmp->proximo,i++); \
+    lista_inserir_##tipo(lista,i,dado); \
+  } \
   \
 }\
 \
@@ -54,6 +72,7 @@ void lista_remover_##tipo(Lista_##tipo *lista, LISTAS_INTEIRO_TAMANHO pos){ \
     if(tmp->antes != NULL) tmp->antes->proximo = tmpprox; \
     else lista->primeiro = tmpprox; \
     (lista->tamanho)--; \
+    free(tmp);\
   } \
 } \
 \
