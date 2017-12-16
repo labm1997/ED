@@ -11,7 +11,6 @@ Lista_##tipo *lista_criar_##tipo(){ \
   novo->tamanho = 0; \
   novo->limparElemento = NULL; \
   novo->ordem = NULL; \
-  novo->_ = lista_dado_##tipo; \
   return novo; \
 } \
 \
@@ -60,6 +59,10 @@ tipo *lista_dado_##tipo(Lista_##tipo *lista, LISTAS_INTEIRO_TAMANHO pos){ \
   Lista_elemento_##tipo *tmp = lista_elemento_##tipo(lista,pos); \
   if(tmp != NULL) return &(tmp->dado); \
   else return NULL; \
+}\
+\
+tipo *_##tipo(Lista_##tipo *lista, LISTAS_INTEIRO_TAMANHO pos){ \
+  return lista_dado_##tipo(lista,pos); \
 }\
 \
 void lista_remover_##tipo(Lista_##tipo *lista, LISTAS_INTEIRO_TAMANHO pos){ \

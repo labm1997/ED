@@ -30,7 +30,7 @@ START_TEST(inserir){
   Lista(int) *a = lista_criar(int);
   int i=0;
   for(;i<1000;i++) lista_adicionar(int,a,i);
-  for(i=0;i<1000;i++) ck_assert_int_eq(*a->_(a,i), i);
+  for(i=0;i<1000;i++) ck_assert_int_eq(*_(int,a,i), i);
   lista_apagar(int,&a);
   ck_assert(a == NULL);
 }
@@ -54,13 +54,13 @@ START_TEST(inserirRemoverPos){
   lista_adicionar(int,a,45); /* a[1] */
   lista_adicionar(int,a,8); /* a[2] */
   lista_adicionar(int,a,150); /* a[3] */
-  ck_assert_int_eq(*a->_(a,2),8);
+  ck_assert_int_eq(*_(int,a,2),8);
   lista_remover(int,a,2);
-  ck_assert_int_eq(*a->_(a,2),150);
+  ck_assert_int_eq(*_(int,a,2),150);
   lista_remover(int,a,2);
-  ck_assert(a->_(a,2) == NULL);
+  ck_assert(_(int,a,2) == NULL);
   lista_adicionar(int,a,150); /* a[2] */
-  ck_assert_int_eq(*a->_(a,2),150);
+  ck_assert_int_eq(*_(int,a,2),150);
   lista_apagar(int,&a);
   ck_assert(a == NULL);
 }
@@ -74,10 +74,19 @@ START_TEST(inserirOrdem){
   lista_adicionar_ordem(int,a,150);
   lista_adicionar_ordem(int,a,8);
   lista_adicionar_ordem(int,a,45);
-  ck_assert_int_eq(*a->_(a,0),8);
-  ck_assert_int_eq(*a->_(a,1),10);
-  ck_assert_int_eq(*a->_(a,2),45);
-  ck_assert_int_eq(*a->_(a,3),150);
+  ck_assert_int_eq(*_(int,a,0),8);
+  ck_assert_int_eq(*_(int,a,1),10);
+  ck_assert_int_eq(*_(int,a,2),45);
+  ck_assert_int_eq(*_(int,a,3),150);
+  lista_adicionar_ordem(int,a,45);
+  lista_adicionar_ordem(int,a,45);
+  lista_adicionar_ordem(int,a,45);
+  ck_assert_int_eq(*_(int,a,1),10);
+  ck_assert_int_eq(*_(int,a,2),45);
+  ck_assert_int_eq(*_(int,a,3),45);
+  ck_assert_int_eq(*_(int,a,4),45);
+  ck_assert_int_eq(*_(int,a,5),45);
+  ck_assert_int_eq(*_(int,a,6),150);
   lista_apagar(int,&a);
   ck_assert(a == NULL);
 }
